@@ -1,0 +1,7 @@
+profile = janestreet
+
+# customization
+dock-collection-brackets=true # put collection brackets on newlines
+indicate-multiline-delimiters=closing-on-separate-line # put multiline statement separaters on newline
+parens-tuple=always 
+parse-docstrings=true 
