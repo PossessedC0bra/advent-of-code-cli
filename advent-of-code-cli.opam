@@ -11,6 +11,8 @@ bug-reports: "https://github.com/possessedc0bra/advent-of-code-cli/issues"
 depends: [
   "dune" {>= "3.20"}
   "ocaml" {>= "5.3"}
+  "base"
+  "dotenv"
   "cmdliner"
   "odoc" {with-doc}
 ]

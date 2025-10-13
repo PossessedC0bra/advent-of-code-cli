@@ -19,7 +19,10 @@
  (description "A CLI tool to help with Advent of Code")
  (depends
   (ocaml
-   (>= 5.3)))
+   (>= 5.3))
+  base
+  dotenv
+  cmdliner)
  (tags ("advent-of-code cli")))
 
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html
