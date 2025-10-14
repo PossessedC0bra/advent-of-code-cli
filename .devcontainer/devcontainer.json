@@ -1,0 +1,16 @@
+{
+	"name": "OCaml Development",
+	"image": "ocaml/opam:ubuntu-ocaml-5.3",
+	"features": {
+		"ghcr.io/devcontainers/features/common-utils:2": {}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ocamllabs.ocaml-platform"
+			]
+		}
+	},
+	"onCreateCommand": "sudo ln -sf $(command -v opam-2.4) /usr/local/bin/opam && opam --version",
+	"postCreateCommand": "opam update && opam install --deps-only --with-dev-setup .",
+}

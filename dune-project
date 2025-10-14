@@ -20,6 +20,8 @@
  (depends
   (ocaml
    (>= 5.3))
+  (ocaml-lsp-server :with-dev-setup)
+  (ocamlformat :with-dev-setup)
   base
   dotenv
   cmdliner)
