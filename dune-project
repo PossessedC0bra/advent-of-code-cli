@@ -22,9 +22,10 @@
    (>= 5.3))
   (ocaml-lsp-server :with-dev-setup)
   (ocamlformat :with-dev-setup)
-  base
   dotenv
-  cmdliner)
+  cmdliner
+  cohttp
+  ptime)
  (tags ("advent-of-code cli")))
 
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html
