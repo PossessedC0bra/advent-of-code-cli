@@ -15,7 +15,7 @@ depends: [
   "ocamlformat" {with-dev-setup}
   "dotenv"
   "cmdliner"
-  "cohttp"
+  "ezcurl"
   "ptime"
   "odoc" {with-doc}
 ]

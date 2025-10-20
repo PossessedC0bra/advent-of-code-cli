@@ -24,7 +24,7 @@
   (ocamlformat :with-dev-setup)
   dotenv
   cmdliner
-  cohttp
+  ezcurl
   ptime)
  (tags ("advent-of-code cli")))
 

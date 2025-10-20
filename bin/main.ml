@@ -76,53 +76,20 @@ module AdventOfCode = struct
     let download_input token year day =
       let url = Printf.sprintf "https://adventofcode.com/%d/day/%d/input" year day in
       let headers =
-        Cohttp.Header.of_list
-          [ ("Cookie", Printf.sprintf "session=%s" token); ("Accept", "text/plain") ]
+        [ ("Cookie", Printf.sprintf "session=%s" token); ("Accept", "text/plain") ]
       in
-      Eio_main.run
-      @@ fun env ->
-      Eio.Switch.run
-      @@ fun sw ->
-      let client = Cohttp_eio.Client.make ~https:None env#net in
-      let response, body =
-        Cohttp_eio.Client.get ~sw ~headers client (Uri.of_string url)
-      in
-      let status = response |> Cohttp.Response.status |> Cohttp.Code.code_of_status in
-      match status with
-      | 200 ->
-        let content = Eio.Buf_read.(of_flow ~max_size:max_int body |> take_all) in
-        Ok content
-      | 400 -> Error "❌ Bad request - check your session cookie"
-      | 404 -> Error (Printf.sprintf "❌ Input not found for year %d, day %d" year day)
-      | code -> Error (Printf.sprintf "❌ HTTP error: %d" code)
+      Ezcurl.get ~url ~headers ()
     ;;
 
     let post_answer token year day level answer =
       let url = Printf.sprintf "https://adventofcode.com/%d/day/%d/answer" year day in
       let headers =
-        Cohttp.Header.of_list
-          [
-            ("Cookie", Printf.sprintf "session=%s" token)
-          ; ("Content-Type", "application/x-www-form-urlencoded")
-          ]
+        [
+          ("Cookie", Printf.sprintf "session=%s" token)
+        ; ("Content-Type", "application/x-www-form-urlencoded")
+        ]
       in
-      let body_string = Printf.sprintf "level=%d&answer=%s" level answer in
-      Eio_main.run
-      @@ fun env ->
-      Eio.Switch.run
-      @@ fun sw ->
-      let client = Cohttp_eio.Client.make ~https:None env#net in
-      let response, body =
-        Cohttp_eio.Client.post
-          ~sw
-          ~headers
-          ~body:(Cohttp_eio.Body.of_string body_string)
-          client
-          (Uri.of_string url)
-      in
-      let status = response |> Cohttp.Response.status |> Cohttp.Code.code_of_status in
-      let content = Eio.Buf_read.(of_flow ~max_size:max_int body |> take_all) in
-      (status, content)
+      ()
     ;;
   end
 end
@@ -137,8 +104,16 @@ module AdventOfCodeCli = struct
       Arg.(
         value
         & opt
-            int
-            (AdventOfCode.Event.Year.get_latest |> AdventOfCode.Event.Year.int_value)
+            (conv
+               ( (fun s ->
+                   int_of_string s
+                   |> AdventOfCode.Event.Year.create
+                   |> Result.map_error (fun err -> `Msg err)
+                 )
+               , fun f y -> AdventOfCode.Event.Year.int_value y |> Format.pp_open_box f
+               )
+            )
+            AdventOfCode.Event.Year.get_latest
             (info ~doc ~docv:"YYYY" [ "y"; "year" ])
       )
     ;;
@@ -157,11 +132,23 @@ module AdventOfCodeCli = struct
 
     module DownloadInput = struct
       let action token year day =
-        match AdventOfCode.Api.download_input token year day with
-        | Ok content ->
-          print_endline content;
-          `Ok ()
-        | Error msg -> `Error (false, msg)
+        match
+          AdventOfCode.Api.download_input
+            token
+            (AdventOfCode.Event.Year.int_value year)
+            day
+        with
+        | Ok response ->
+          ( match response.code with
+            | x when x >= 200 && x <= 299 ->
+              print_string (Ezcurl.string_of_response response);
+              `Ok ()
+            | x when x >= 400 && x <= 500 ->
+              prerr_endline (Ezcurl.string_of_response response);
+              `Error (false, "Error ")
+            | _ -> `Error (true, "Unknown Error")
+          )
+        | Error (_, s) -> `Error (false, s)
       ;;
 
       let cmd =
