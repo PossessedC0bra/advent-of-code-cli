@@ -2,7 +2,6 @@
 	"name": "Advent of Code CLI",
 	"image": "ocaml/opam:ubuntu-ocaml-5.3",
 	"features": {
-		"ghcr.io/devcontainers/features/git": {},
 		"ghcr.io/devcontainers-extra/features/apt-packages": {
 			"packages": [
 				"libcurl4-gnutls-dev"
