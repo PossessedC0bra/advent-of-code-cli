@@ -22,6 +22,7 @@
    (>= 5.3))
   (ocaml-lsp-server :with-dev-setup)
   (ocamlformat :with-dev-setup)
+  dune-build-info
   dotenv
   cmdliner
   ezcurl

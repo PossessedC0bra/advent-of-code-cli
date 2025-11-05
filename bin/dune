@@ -1,4 +1,4 @@
 (executable
- (public_name aoc-cli)
  (name main)
- (libraries advent_of_code_cli dotenv cmdliner ezcurl ptime ptime.clock))
+ (public_name aoc-cli)
+ (libraries advent_of_code_cli dotenv))
