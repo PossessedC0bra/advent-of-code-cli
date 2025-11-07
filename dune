@@ -1,7 +1,0 @@
-(env
- (dev
-  (flags
-   (:standard -w -32-27-26)))
- (release
-  (flags
-   (:standard -w +32+27+26))))
