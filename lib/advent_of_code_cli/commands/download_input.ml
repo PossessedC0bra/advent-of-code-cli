@@ -5,8 +5,8 @@ let action token year day output_file =
   match
     Advent_of_code.Client.download_input
       token
-      (Advent_of_code.Types.Year.int_value year)
-      day
+      (year |> Advent_of_code.Types.Year.int_value)
+      (day |> Advent_of_code.Types.Day.int_value)
   with
   | Ok response ->
     ( match response.code with
@@ -36,7 +36,7 @@ let cmd =
          $ Arguments.session_cookie_arg
          $ Arguments.year
          $ Arguments.day
-         $ Arguments.output_file
+         $ Arguments.output
         )
     )
 ;;

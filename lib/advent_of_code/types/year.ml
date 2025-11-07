@@ -6,7 +6,7 @@ let latest () =
   let now = now () in
   let current_year = to_year now in
   let current_year_event_start =
-    Ptime.of_date ~tz_offset_s:Event.publish_time_zone_offset_s (current_year, 12, 1)
+    of_date ~tz_offset_s:Event.publish_time_zone_offset_s (current_year, 12, 1)
     |> Option.get
   in
   if is_earlier now ~than:current_year_event_start then current_year - 1 else current_year
@@ -15,13 +15,7 @@ let latest () =
 let of_int year =
   let latest_event = latest () in
   if year < 2015
-  then
-    Error
-      (Printf.sprintf
-         "❌ Invalid year: %d — Advent of Code didn't exist yet in %d!"
-         year
-         year
-      )
+  then Error (Printf.sprintf "❌ Invalid year: %d — Advent of Code started in 2015." year)
   else if year > latest_event
   then
     Error
