@@ -1,7 +1,7 @@
 open Cmdliner
 
 let session_cookie_arg =
-  let doc = "The session cookie for accessing the Advent of Code Website and API" in
+  let doc = "The session cookie for accessing the Advent of Code Website and API." in
   Arg.(
     required
     & opt (some string) None
@@ -23,17 +23,17 @@ let year =
       ( (fun s ->
           s
           |> int_of_string_opt
-          |> Option.map Advent_of_code.Types.Year.of_int
+          |> Option.map Advent_of_code.Event.create
           |> function
           | Some year -> year
           | None -> Error (Printf.sprintf "❌ Invalid year: %s — not a number." s)
         )
-      , fun f y -> y |> Advent_of_code.Types.Year.int_value |> Format.pp_print_int f
+      , fun f y -> y |> Advent_of_code.Event.year |> Format.pp_print_int f
       )
   in
   Arg.(
     value
-    & opt converter (Advent_of_code.Types.Year.latest ())
+    & opt converter (Advent_of_code.Event.get_latest ())
     & info ~doc ~docv:"YYYY" [ "y"; "year" ]
   )
 ;;
@@ -48,7 +48,7 @@ let day =
       ( (fun s ->
           s
           |> int_of_string_opt
-          |> Option.map Advent_of_code.Types.Day.of_int
+          |> Option.map Advent_of_code.Day.create
           |> function
           | Some day -> day |> Result.map (fun d -> Some d)
           | None -> Error (Printf.sprintf "❌ Invalid day: %s — not a number." s)
@@ -56,20 +56,22 @@ let day =
       , fun f y ->
           match y with
           | None -> Format.fprintf f "current day"
-          | Some day -> day |> Advent_of_code.Types.Day.int_value |> Format.pp_print_int f
+          | Some day -> day |> Advent_of_code.Day.to_int |> Format.pp_print_int f
       )
   in
+  let current_puzzle_day_opt =
+    let open Commons.Option.Infix in
+    Advent_of_code.(Puzzle.get_current () >>| Puzzle.day)
+  in
   Arg.(
-    required
-    & opt converter (Advent_of_code.Types.Day.current ())
-    & info ~doc ~docv:"day" ~absent:"current day" [ "d"; "day" ]
+    required & opt converter current_puzzle_day_opt & info ~doc ~docv:"day" [ "d"; "day" ]
   )
 ;;
 
 let output =
   let doc =
     "The file to write the puzzle input to. Use '-' to write to STDOUT. Defaults to \
-     STDOUT if no value is provided."
+     STDOUT."
   in
   let converter =
     Arg.conv'

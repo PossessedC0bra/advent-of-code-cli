@@ -1,5 +1,5 @@
 (library
  (name advent_of_code)
- (libraries ezcurl ptime ptime.clock))
+ (libraries commons ezcurl ptime ptime.clock))
 
 (include_subdirs qualified)
