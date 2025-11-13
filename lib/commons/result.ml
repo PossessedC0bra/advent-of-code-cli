@@ -3,6 +3,6 @@ module Infix = struct
 
   let ( let* ) = bind
   let ( >>= ) = bind
-  let ( >>+ ) x f = map f x
-  let ( >>- ) x f = map_error f x
+  let ( >>| ) x f = map f x
+  let ( >>! ) x f = map_error f x
 end
