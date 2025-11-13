@@ -34,7 +34,12 @@ let action token year day output_file =
 let cmd =
   Cmd.(
     v
-      (info "input")
+      (info
+         "input"
+         ~doc:
+           "Download your Advent of Code puzzle input for a given day and year. \
+            Optionally save to a file."
+      )
       Term.(
         ret
           (const action
