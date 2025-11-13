@@ -3,5 +3,5 @@ module Infix = struct
 
   let ( let* ) = bind
   let ( >>= ) = bind
-  let ( >>| ) f x = map x f
+  let ( >>| ) x f = map f x
 end
