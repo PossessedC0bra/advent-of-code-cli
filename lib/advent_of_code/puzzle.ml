@@ -1,16 +1,20 @@
 type t = Event.t * int
 
 let create ~event ~day =
-  if day < 1 || day > 25
-  then Error (Printf.sprintf "❌ Invalid day: %d — must be between 1 and 25." day)
-  else if Event.year event >= 2025 && day > 12
-  then
-    Error
-      (Printf.sprintf
-         "❌ Invalid day: %d — Starting from 2025, there are 12 instead of 25 puzzles \
-          available."
-         day
-      )
+  let year = Event.year event in
+  let max_puzzles = if year >= 2025 then 12 else 25 in
+  if day < 1 || day > max_puzzles
+  then (
+    match year with
+    | _ when year >= 2025 ->
+      Error
+        (Printf.sprintf
+           "❌ Invalid day: %d — Starting from 2025, there are 12 instead of 25 puzzles \
+            available."
+           day
+        )
+    | _ -> Error (Printf.sprintf "❌ Invalid day: %d — must be between 1 and 25." day)
+  )
   else Ok (event, day)
 ;;
 
