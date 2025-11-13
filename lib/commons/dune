@@ -1,0 +1,4 @@
+(library
+ (name commons))
+
+(include_subdirs qualified)
