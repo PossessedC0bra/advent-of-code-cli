@@ -1,13 +1,15 @@
-type t = Event.t * Day.t
+type t = Event.t * int
 
 let create ~event ~day =
-  if Event.year event >= 2025 && Day.to_int day > 12
+  if day < 1 || day > 25
+  then Error (Printf.sprintf "❌ Invalid day: %d — must be between 1 and 25." day)
+  else if Event.year event >= 2025 && day > 12
   then
     Error
       (Printf.sprintf
          "❌ Invalid day: %d — Starting from 2025, there are 12 instead of 25 puzzles \
           available."
-         (Day.to_int day)
+         day
       )
   else Ok (event, day)
 ;;
@@ -15,7 +17,6 @@ let create ~event ~day =
 let of_year_and_day year day =
   let open Commons.Result.Infix in
   let* event = Event.create year in
-  let* day = Day.create day in
   create ~event ~day
 ;;
 

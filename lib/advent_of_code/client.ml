@@ -8,7 +8,7 @@ let download_input token puzzle =
       (Printf.sprintf
          "/%d/day/%d/input"
          (puzzle |> Puzzle.event |> Event.year)
-         (puzzle |> Puzzle.day |> Day.to_int)
+         (puzzle |> Puzzle.day)
       )
   in
   let headers = [ session_cookie_header token; ("Accept", "text/plain") ] in

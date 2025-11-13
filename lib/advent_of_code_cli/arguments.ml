@@ -19,17 +19,18 @@ let year =
      year."
   in
   let converter =
-    Arg.conv'
-      ( (fun s ->
-          s
-          |> int_of_string_opt
-          |> Option.map Advent_of_code.Event.create
-          |> function
-          | Some year -> year
-          | None -> Error (Printf.sprintf "❌ Invalid year: %s — not a number." s)
-        )
-      , fun f y -> y |> Advent_of_code.Event.year |> Format.pp_print_int f
-      )
+    let parser =
+      fun s ->
+      let open Commons.Option.Infix in
+      s
+      |> int_of_string_opt
+      >>| Advent_of_code.Event.create
+      |> function
+      | Some year -> year
+      | None -> Error (Printf.sprintf "❌ Invalid year: %s — not a number." s)
+    in
+    let printer = fun f y -> y |> Advent_of_code.Event.year |> Format.pp_print_int f in
+    Arg.conv' (parser, printer)
   in
   Arg.(
     value
@@ -43,28 +44,14 @@ let day =
     "The day of the puzzle (1 - 25). Defaults to the currently active puzzle day if \
      there is an ongoing Advent of Code event."
   in
-  let converter =
-    Arg.conv'
-      ( (fun s ->
-          s
-          |> int_of_string_opt
-          |> Option.map Advent_of_code.Day.create
-          |> function
-          | Some day -> day |> Result.map (fun d -> Some d)
-          | None -> Error (Printf.sprintf "❌ Invalid day: %s — not a number." s)
-        )
-      , fun f y ->
-          match y with
-          | None -> Format.fprintf f "current day"
-          | Some day -> day |> Advent_of_code.Day.to_int |> Format.pp_print_int f
-      )
-  in
   let current_puzzle_day_opt =
     let open Commons.Option.Infix in
     Advent_of_code.(Puzzle.get_current () >>| Puzzle.day)
   in
   Arg.(
-    required & opt converter current_puzzle_day_opt & info ~doc ~docv:"day" [ "d"; "day" ]
+    required
+    & opt (some int) current_puzzle_day_opt
+    & info ~doc ~docv:"day" [ "d"; "day" ]
   )
 ;;
 
