@@ -15,10 +15,14 @@ let action token year day output_file =
                 `Ok ()
               | Some filename ->
                 let oc = open_out filename in
-                output_string oc response.body;
-                close_out oc;
-                Printf.printf "✅ Input saved to %s\n" filename;
-                `Ok ()
+                Fun.protect
+                  (fun () ->
+                     output_string oc response.body;
+                     close_out oc;
+                     Printf.printf "✅ Input saved to %s\n" filename;
+                     `Ok ()
+                   )
+                  ~finally:(fun () -> close_out_noerr oc)
             )
           | code -> `Error (true, Printf.sprintf "HTTP Error %d: %s" code response.body)
         )
