@@ -62,8 +62,12 @@ let output =
       | "" | "-" -> Ok None
       | s ->
         let prompt_overwrite filename =
-          Printf.printf "⚠️  File '%s' already exists. Overwrite? (y/N): " filename;
-          String.lowercase_ascii (read_line ()) = "y"
+          Printf.printf "⚠️  File '%s' already exists. \n\nOverwrite? (y/N): " filename;
+          let res =
+            try read_line () with
+            | _ -> "n"
+          in
+          String.lowercase_ascii res = "y"
         in
         if Sys.file_exists s && not (prompt_overwrite s)
         then Error (Printf.sprintf "⚠️  Cancelled: File '%s' was not overwritten" s)
