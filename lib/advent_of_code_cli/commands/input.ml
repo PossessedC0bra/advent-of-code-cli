@@ -19,7 +19,7 @@ let action token year day output_file =
                   `Ok ()
                 )
             )
-          | code -> `Error (true, Printf.sprintf "HTTP Error %d: %s" code response.body)
+          | code -> `Error (true, Printf.sprintf "HTTP Error %d" code)
         )
       | Error (_, s) -> `Error (false, s)
     )
