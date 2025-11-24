@@ -14,7 +14,16 @@ let get_latest () =
   let now = now () in
   let current_year = to_year now in
   let current_year_event_start =
-    of_date ~tz_offset_s:publish_time_zone_offset_s (current_year, 12, 1) |> Option.get
+    of_date ~tz_offset_s:publish_time_zone_offset_s (current_year, 12, 1)
+    |> Option.value
+         ~default:
+           (failwith
+              (Printf.sprintf
+                 "Failed to create start date of this years Advent of Code event: \
+                  %d-12-01"
+                 current_year
+              )
+           )
   in
   if is_earlier now ~than:current_year_event_start then current_year - 1 else current_year
 ;;
