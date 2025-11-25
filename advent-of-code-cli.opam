@@ -13,9 +13,11 @@ depends: [
   "ocaml" {>= "5.3"}
   "ocaml-lsp-server" {with-dev-setup}
   "ocamlformat" {with-dev-setup}
-  "base"
+  "dune-build-info"
   "dotenv"
   "cmdliner"
+  "ezcurl"
+  "ptime"
   "odoc" {with-doc}
 ]
 build: [

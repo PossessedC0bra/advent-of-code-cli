@@ -1,7 +1,12 @@
 {
-	"name": "OCaml Development",
+	"name": "Advent of Code CLI",
 	"image": "ocaml/opam:ubuntu-ocaml-5.3",
 	"features": {
+		"ghcr.io/devcontainers-extra/features/apt-packages:1": {
+			"packages": [
+				"libcurl4-gnutls-dev"
+			]
+		},
 		"ghcr.io/devcontainers/features/common-utils:2": {}
 	},
 	"customizations": {
@@ -13,4 +18,7 @@
 	},
 	"onCreateCommand": "sudo ln -sf $(command -v opam-2.4) /usr/local/bin/opam && opam --version",
 	"postCreateCommand": "opam update && opam install --deps-only --with-dev-setup .",
+	"mounts": [
+		"type=bind,source=${localEnv:HOME}/.gitconfig,target=/home/opam/.gitconfig,consistency=cached,ro"
+	]
 }

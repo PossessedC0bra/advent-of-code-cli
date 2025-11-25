@@ -1,0 +1,5 @@
+(library
+ (name advent_of_code_cli)
+ (libraries dune-build-info commons advent_of_code cmdliner))
+
+(include_subdirs qualified)
